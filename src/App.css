@@ -1,0 +1,168 @@
+div.font-author {
+    font-weight: 400;
+    letter-spacing: -0.03em;
+  }
+  
+  /* Base styles for the container */
+  .photo-gallery {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  /* Photo card container with responsive widths */
+  .photo-card {
+    width: 100%;
+    height: 500px;
+    gap: 10px /* Default to full width */
+  }
+  @media (min-width: 350px) {
+    .photo-card {
+      width: 100%;
+      height: 500px;
+      margin: 10px /* Full width for medium screens */
+    }
+    .favorite-btn {
+      font-size: 30px;
+    }
+    .text-photographer {
+      font-size: 28px;
+    }
+    .text-title {
+      font-size: 30px;
+    }
+    .filler {
+      height: 40px;
+    }
+  }
+
+  @media (min-width: 796px) {
+    .photo-card {
+      width: 350px;
+      height: 250px;
+      margin: 10px /* Full width for medium screens */
+    }
+    .favorite-btn {
+      font-size: 19px;
+    }
+    .text-photographer {
+      font-size: 17px;
+    }
+    .text-title {
+      font-size: 19px;
+    }
+    .filler {
+      height: 30px;
+    }
+  }
+  
+  
+  /* Medium screen (md) */
+  @media (min-width: 920px) {
+    .photo-card {
+      width: 400px;
+      height: 300px;
+      margin: 12px 
+    }
+    .favorite-btn {
+      font-size: 22px;
+    }
+    .text-photographer {
+      font-size: 20px;
+    }
+    .text-title {
+      font-size: 22px;
+    }
+    .filler {
+      height: 30px;
+    }
+  }
+  
+  /* Large screen (lg) */
+  @media (min-width: 1096px) {
+    .photo-card {
+      width: 500px; /* Full width for large screens */
+      height: 400px; /* Set height for large screens */
+      margin: 10px
+    }
+    .favorite-btn {
+      font-size: 24px;
+    }
+    .text-photographer {
+      font-size: 22px;
+    }
+    .text-title {
+      font-size: 24px;
+    }
+    .filler {
+      height: 40px;
+    }
+  }
+  
+  /* Extra Large screen (xl) */
+  @media (min-width: 1337px) {
+    .photo-card {
+      width: 400px; /* Set width for xl screens */
+      height: 300px; /* Set height for xl screens */
+      margin: 15px
+    }
+    .favorite-btn {
+      font-size: 22px;
+    }
+    .text-photographer {
+      font-size: 20px;
+    }
+    .text-title {
+      font-size: 22px;
+    }
+    .filler {
+      height: 40px;
+    }
+  }
+  
+  /* 2X Large screen (2xl) */
+  @media (min-width: 1657px) {
+    .photo-card {
+      width: 400px; /* Set width for 2xl screens */
+      height: 300px; /* Set height for 2xl screens */
+      margin: 20px
+
+    }
+    .favorite-btn {
+      font-size: 22px;
+    }
+    .text-photographer {
+      font-size: 20px;
+    }
+    .text-title {
+      font-size: 22px;
+    }
+    .filler {
+      height: 40px;
+    }
+  }
+  
+  /* Very Large screen (3xl) - 2000px and above */
+  @media (min-width: 2088px) {
+    .photo-card {
+      width: 500px; /* Set width for 3xl screens */
+      height: 400px; 
+      margin: 15px/* Set height for 3xl screens */
+    }
+    .favorite-btn {
+      font-size: 24px;
+    }
+    .text-photographer {
+      font-size: 22px;
+    }
+    .text-title {
+      font-size: 24px;
+    }
+    .filler {
+      height: 50px;
+    }
+  }
+
+
+  
