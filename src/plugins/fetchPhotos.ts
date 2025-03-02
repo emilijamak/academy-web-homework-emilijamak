@@ -1,28 +1,30 @@
+const PEXELS_API_URL = 'https://api.pexels.com/v1';
 
+const fetchPhotos = async (endpoint: string, params: Record<string, string> = {}) => {
+  const url = new URL(`${PEXELS_API_URL}/${endpoint}`);
 
+  // Append query parameters
+  Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value));
 
-const pexelsApiUrl = 'https://api.pexels.com/v1/curated?per_page=16&page=1'
+  try {
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      headers: {
+        Authorization: 'ApIimUraYf83WuL0dMBONzmiWZwbqKjNNzg5RpePMmp4O1AfVLbNwonU',
+      },
+    });
 
-const fetchPhotos = async () => {
-    try {
-      const response = await fetch(pexelsApiUrl, {
-        method: 'GET',
-        headers: {
-          Authorization: 'ApIimUraYf83WuL0dMBONzmiWZwbqKjNNzg5RpePMmp4O1AfVLbNwonU',
-        },
-      });
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: Failed to fetch photos`);
+    }
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch photos');
-      }
+    const data = await response.json();
+    return data.photos; // Only return relevant data
 
-      const data: any = await response.json();
+  } catch (error) {
+    console.error('Error fetching photos:', error);
+    throw error; // Allow the caller to handle errors
+  }
+};
 
-      return data
-      
-    } catch (err: any) {
-      console.error(err)
-    } 
-  
-  };
-export default fetchPhotos
+export default fetchPhotos;

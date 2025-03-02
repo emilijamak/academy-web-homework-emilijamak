@@ -1,8 +1,4 @@
-div.font-author {
-    font-weight: 400;
-    letter-spacing: -0.03em;
-  }
-  
+ 
   /* Base styles for the container */
   .photo-gallery {
     display: flex;
