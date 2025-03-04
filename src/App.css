@@ -13,6 +13,10 @@
     height: 500px;
     gap: 10px /* Default to full width */
   }
+
+  body {
+    background-color: #e7e7e7;
+  }
   @media (min-width: 350px) {
     .photo-card {
       width: 100%;
