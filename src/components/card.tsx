@@ -56,10 +56,10 @@ function Card({ data }: CardProps) {
   return (
     <div 
       ref={cardRef}
-      className="w-full h-full group shadow-[4px_4px_5px_rgb(0,0,0,0.3)]"
+      className="w-full h-full overflow-hidden rounded-md group shadow-[4px_4px_5px_rgb(0,0,0,0.3)]"
     >
       <div 
-        className={`relative overflow-hidden rounded-md h-full ${
+        className={`relative  h-full ${
           !isLoaded ? "blur-sm bg-gray-200" : ""
         }`}
         style={{
