@@ -3,13 +3,17 @@ import { Photo } from "../model/IPhoto";
 import fetchPhotos from "../plugins/fetchPhotos";
 import Card from "./card";
 
-function PhotoGallery() {
+interface PhotoGalleryProps {
+  showFavorites: boolean;
+}
+
+function PhotoGallery({ showFavorites }: PhotoGalleryProps) {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const triggerFetchRef = useRef<HTMLDivElement | null>(null);
-  const [isFavoriteActive, setIsFavoriteActive] = useState<boolean>(true);
 
+  // Load saved photos from localStorage on initial render
   useEffect(() => {
     const savedPhotosJson = localStorage.getItem("photos");
     if (savedPhotosJson) {
@@ -17,7 +21,11 @@ function PhotoGallery() {
     }
   }, []);
 
+  // Fetch new photos when page changes
   useEffect(() => {
+    // Don't fetch more photos when in favorites mode
+    if (showFavorites) return;
+
     const loadPhotos = async () => {
       setIsLoading(true);
       try {
@@ -47,8 +55,9 @@ function PhotoGallery() {
     };
 
     loadPhotos();
-  }, [page]);
+  }, [page, showFavorites]);
 
+  // Toggle favorite status for a photo
   const handleFavoritePhoto = (id: number) => {
     const updatedPhotos = photos.map(photo =>
       photo.id === id ? { ...photo, liked: !photo.liked } : photo
@@ -57,14 +66,18 @@ function PhotoGallery() {
     localStorage.setItem("photos", JSON.stringify(updatedPhotos));
   };
 
+  // Setup intersection observer for infinite scrolling
   useEffect(() => {
+    // Don't observe for infinite scroll when in favorites mode
+    if (showFavorites) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !isLoading) {
           setPage(prevPage => prevPage + 1);
         }
       },
-      { threshold: 1.0 }
+      { threshold: 0.5 }
     );
 
     if (triggerFetchRef.current) {
@@ -76,19 +89,15 @@ function PhotoGallery() {
         observer.unobserve(triggerFetchRef.current);
       }
     };
-  }, [isLoading]);
+  }, [isLoading, showFavorites]);
 
-  // **Correctly filter favorite photos**
-  const favoritePhotos = photos.filter(photo => photo.liked);
+  // Filter photos based on the showFavorites prop
+  const displayedPhotos = showFavorites ? photos.filter(photo => photo.liked) : photos;
 
   return (
     <div className="photo-gallery">
-      <button onClick={() => setIsFavoriteActive(!isFavoriteActive)}>
-        {isFavoriteActive ? "Show All Photos" : "Show Favorites"}
-      </button>
-
-      <div className="photo-gallery">
-        {(isFavoriteActive ? favoritePhotos : photos).map(photo => (
+     
+        {displayedPhotos.map(photo => (
           <div
             className="photo-card"
             key={`photo-${photo.id}`}
@@ -97,10 +106,13 @@ function PhotoGallery() {
             <Card data={photo} />
           </div>
         ))}
-      </div>
+     
 
-      <div ref={triggerFetchRef} style={{ height: "20px" }} />
-      {/* {isLoading && <p>Loading...</p>} */}
+      {!showFavorites && <div ref={triggerFetchRef} style={{ height: "20px" }} />}
+      {isLoading && !showFavorites && <p>Loading...</p>}
+      {showFavorites && displayedPhotos.length === 0 && (
+        <p>No favorite photos yet.</p>
+      )}
     </div>
   );
 }

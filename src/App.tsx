@@ -4,13 +4,18 @@ import PhotoGallery from "./components/photo-gallery";
 import Navbar from "./components/navbar";
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const [showFavorites, setShowFavorites] = useState<boolean>(false);
+  
+  const handleFavorites = (value: boolean) => {
+    console.log('clicked', value);
+    setShowFavorites(value);
+  };
+  
   return (
     <div className="">
-      <Navbar/>
+      <Navbar handleFavorites={handleFavorites} />
       <div className="mx-auto p-3">
-      <PhotoGallery />
+      <PhotoGallery showFavorites={showFavorites} />
       </div>
     </div>
   );
