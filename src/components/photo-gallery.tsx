@@ -13,7 +13,7 @@ function PhotoGallery({ showFavorites }: PhotoGalleryProps) {
   const [isLoading, setIsLoading] = useState(false);
   const triggerFetchRef = useRef<HTMLDivElement | null>(null);
 
-  // Load saved photos from localStorage on initial render
+
   useEffect(() => {
     const savedPhotosJson = localStorage.getItem("photos");
     if (savedPhotosJson) {
@@ -21,7 +21,7 @@ function PhotoGallery({ showFavorites }: PhotoGalleryProps) {
     }
   }, []);
 
-  // Fetch new photos when page changes
+
   useEffect(() => {
     // Don't fetch more photos when in favorites mode
     if (showFavorites) return;
@@ -35,18 +35,28 @@ function PhotoGallery({ showFavorites }: PhotoGalleryProps) {
         });
 
         const savedPhotosJson = localStorage.getItem("photos");
-        const savedPhotos: Photo[] = savedPhotosJson ? JSON.parse(savedPhotosJson) : [];
+        const savedPhotos: Photo[] = savedPhotosJson
+          ? JSON.parse(savedPhotosJson)
+          : [];
 
-        const savedPhotoMap = new Map(savedPhotos.map(photo => [photo.id, photo]));
-
-        const updatedPhotos = newPhotos.map((photo: Photo) =>
-          savedPhotoMap.has(photo.id) ? { ...photo, liked: savedPhotoMap.get(photo.id)?.liked } : photo
+        const savedPhotoMap = new Map(
+          savedPhotos.map((photo) => [photo.id, photo])
         );
 
-        const mergedPhotos = page === 1 ? updatedPhotos : [...photos, ...updatedPhotos];
-        const uniquePhotos = Array.from(new Map(mergedPhotos.map(photo => [photo.id, photo])).values());
+        const updatedPhotos = newPhotos.map((photo: Photo) =>
+          savedPhotoMap.has(photo.id)
+            ? { ...photo, liked: savedPhotoMap.get(photo.id)?.liked }
+            : photo
+        );
+
+        const mergedPhotos =
+          page === 1 ? updatedPhotos : [...photos, ...updatedPhotos];
+        const uniquePhotos = Array.from(
+          new Map(mergedPhotos.map((photo: Photo) => [photo.id, photo])).values()
+        );
 
         setPhotos(uniquePhotos);
+        console.log(uniquePhotos)
         localStorage.setItem("photos", JSON.stringify(uniquePhotos));
       } catch (error) {
         console.error("Error fetching photos:", error);
@@ -59,7 +69,7 @@ function PhotoGallery({ showFavorites }: PhotoGalleryProps) {
 
   // Toggle favorite status for a photo
   const handleFavoritePhoto = (id: number) => {
-    const updatedPhotos = photos.map(photo =>
+    const updatedPhotos = photos.map((photo) =>
       photo.id === id ? { ...photo, liked: !photo.liked } : photo
     );
     setPhotos(updatedPhotos);
@@ -74,7 +84,7 @@ function PhotoGallery({ showFavorites }: PhotoGalleryProps) {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !isLoading) {
-          setPage(prevPage => prevPage + 1);
+          setPage((prevPage) => prevPage + 1);
         }
       },
       { threshold: 0.5 }
@@ -92,12 +102,14 @@ function PhotoGallery({ showFavorites }: PhotoGalleryProps) {
   }, [isLoading, showFavorites]);
 
   // Filter photos based on the showFavorites prop
-  const displayedPhotos = showFavorites ? photos.filter(photo => photo.liked) : photos;
+  const displayedPhotos = showFavorites
+    ? photos.filter((photo) => photo.liked)
+    : photos;
 
   return (
-    <div className="photo-gallery">
-     
-        {displayedPhotos.map(photo => (
+    <div className="gallery-wrapper">
+      <div className="photo-gallery">
+        {displayedPhotos.map((photo) => (
           <div
             className="photo-card"
             key={`photo-${photo.id}`}
@@ -106,13 +118,15 @@ function PhotoGallery({ showFavorites }: PhotoGalleryProps) {
             <Card data={photo} />
           </div>
         ))}
-     
 
-      {!showFavorites && <div ref={triggerFetchRef} style={{ height: "20px" }} />}
-      {isLoading && !showFavorites && <p>Loading...</p>}
-      {showFavorites && displayedPhotos.length === 0 && (
-        <p>No favorite photos yet.</p>
-      )}
+        {!showFavorites && (
+          <div ref={triggerFetchRef} style={{ height: "20px" }} />
+        )}
+        {isLoading && !showFavorites && <p>Loading...</p>}
+        {showFavorites && displayedPhotos.length === 0 && (
+          <p>No favorite photos yet.</p>
+        )}
+      </div>
     </div>
   );
 }
