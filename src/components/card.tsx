@@ -9,35 +9,50 @@ function Card({ data }: CardProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  
-  const extractTitleFromUrl = (url: string): string => {
-    const match = url.match(/photo\/([^/]+)/);
-    if (match) {
-      let title = match[1]
-        .replace(/-/g, " ")
-        .replace(/\d+$/, "")
-        .trim();
 
-      return title.charAt(0).toUpperCase() + title.slice(1);
-    }
-    return "Untitled Image";
+  const imageData = {
+    original: data.src.original,
+    large2x: data.src.large2x,
+    large: data.src.large,
+    medium: data.src.medium,
+    small: data.src.small,
+    portrait: data.src.portrait,
+    landscape: data.src.landscape,
+    tiny: data.src.tiny,
   };
 
+  const srcSetString = `
+  ${imageData.tiny} 130w,
+  ${imageData.small} 130w,
+  ${imageData.medium} 350w,
+  ${imageData.large} 940w,
+  ${imageData.large2x} 1880w,
+  ${imageData.portrait} 800w,
+  ${imageData.landscape} 1200w,
+  ${imageData.original} 2400w
+`;
 
+  const sizesString = `
+  (min-width: 2088px) 1500px,
+  (min-width: 1657px) 1300px,
+  (min-width: 1337px) 801px,
+  (min-width: 1096px) 801px,
+  (min-width: 920px) 801px,
+  (min-width: 796px) 1500px,
+  100vw
+`;
 
-  const title =
-    data.alt && data.alt.length <= 50 ? data.alt : extractTitleFromUrl(data.url);
-
-  // Intersection Observer for lazy loading
   useEffect(() => {
+    // function to check if the card is in the viewport
+
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
         setIsInView(entry.isIntersecting);
       },
-      { 
-        threshold: 0.5, 
-        rootMargin: "100px" 
+      {
+        threshold: 0.5,
+        rootMargin: "100px",
       }
     );
 
@@ -53,43 +68,55 @@ function Card({ data }: CardProps) {
     };
   }, []);
 
+  // Function to extract the title from the URL
+
+  const extractTitleFromUrl = (url: string): string => {
+    const match = url.match(/photo\/([^/]+)/);
+    if (match) {
+      let title = match[1].replace(/-/g, " ").replace(/\d+$/, "").trim();
+
+      return title.charAt(0).toUpperCase() + title.slice(1);
+    }
+    return "Untitled Image";
+  };
+
+  const title =
+    data.alt && data.alt.length <= 50
+      ? data.alt
+      : extractTitleFromUrl(data.url);
+
   return (
-    <div 
-      ref={cardRef}
-      className="w-full h-full overflow-hidden rounded-md group shadow-[4px_4px_5px_rgb(0,0,0,0.3)]"
-    >
-      <div 
-        className={`relative  h-full ${
-          !isLoaded ? "blur-sm bg-gray-200" : ""
-        }`}
+    <div ref={cardRef} className="card-container">
+      <div
+        className={`relative ${!isLoaded ? "blur-sm bg-gray-200" : ""}`}
         style={{
           backgroundColor: !isLoaded ? "#e5e7eb" : "transparent",
-          transition: "filter 0.3s ease-out"
+          transition: "filter 0.3s ease-out",
         }}
       >
-
         {isInView && (
           <img
-            className={`h-full w-full object-cover transition-opacity duration-300 ${
-              isLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            src={data.src.large2x}
+            data-testid="card-image"
+            className={isLoaded ? "opacity-100 " : "opacity-0"}
+            src={imageData.large}
+            srcSet={srcSetString}
+            sizes={sizesString}
             alt={title}
             onLoad={() => setIsLoaded(true)}
             style={{ position: isLoaded ? "relative" : "absolute" }}
           />
         )}
 
-        <div className="absolute text-white top-0 left-0 h-full w-full bg-black/20 flex flex-col items-center p-8 justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute">
           <div className="filler"></div>
           <div className="flex flex-col justify-center items-center">
             <div className="font-bold text-title text-center">{title}</div>
-            <hr className="my-1 h-[2.5px] w-[55%] rounded-md border-t-0 bg-neutral-100 dark:bg-white" />
+            <hr />
             <div className="text-photographer italic">{data.photographer}</div>
           </div>
 
-          <div className="btn favorite-btn font-medium mt-3 border border-white/60 py-2 px-12 rounded-full cursor-pointer hover:bg-white/20">
-            {!data.liked ? 'Favorite' : 'Unfavorite'}
+          <div className="btn favorite-btn">
+            {!data.liked ? "Favorite" : "Unfavorite"}
           </div>
         </div>
       </div>
