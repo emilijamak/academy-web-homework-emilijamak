@@ -39,5 +39,35 @@ Testing
 - When 'Favorite' clicked on navigation bar - photos that have 'liked: true' attribute are loaded
 - When 'All Photos' clicked on navigation bar - photos that have 'liked: false' attribute are loaded
 - On reload photos are fetched from Local Storage and displayed again
-  
+
+
+# Getting started
+
+Make sure that you have Node.js (v16 or later) downloaded
+1. Close Repository
+``` sh
+git clone https://github.com/emilijamak/academy-web-homework-emilijamak
+```
+
+2. Install dependencies
+``` sh
+npm install
+# or
+yarn install
+```
+
+3. Running the Project
+```sh
+npm run dev
+# or
+yarn dev
+```
+This will start project on http://localhost:5173/
+
+4. Running Tests
+```sh
+npm test
+# or
+yarn test
+```
 
